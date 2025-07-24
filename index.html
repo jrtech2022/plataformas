@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Plataformas VIP</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0D1117;
+            color: #C9D1D9;
+        }
+        .card-upgraded {
+            background: radial-gradient(circle at 100% 0%, rgba(88, 166, 255, 0.05), rgba(88, 166, 255, 0) 40%), #161B22;
+            border: 1px solid #30363D;
+        }
+        .card-upgraded:hover {
+            border-color: #58A6FF;
+            transform: translateY(-0.5rem);
+        }
+        .btn-primary {
+            background-color: #58A6FF;
+            color: #0D1117;
+        }
+        .btn-primary:hover {
+            background-color: #80B9FF;
+        }
+        .btn-secondary {
+            background-color: #21262D;
+            border: 1px solid #30363D;
+        }
+        .btn-secondary:hover {
+            background-color: #30363D;
+        }
+        .tag {
+            background-color: #30363D;
+            color: #8B949E;
+        }
+        .tag-popular {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .tag-new {
+            background-color: rgba(88, 166, 255, 0.1);
+            color: #58A6FF;
+            border: 1px solid rgba(88, 166, 255, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #161B22; }
+        ::-webkit-scrollbar-thumb { background: #30363D; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #58A6FF; }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+        <div class="bg-[#161B22] p-8 rounded-2xl shadow-2xl border border-[#30363D] text-center relative transform transition-transform duration-300 scale-95">
+            <h3 id="qr-modal-title" class="text-2xl font-semibold mb-4 text-white"></h3>
+            <div id="qrcode" class="flex justify-center items-center p-2 bg-white rounded-lg"></div>
+            <p class="text-gray-400 mt-4 text-sm">Escaneie para acessar do seu celular</p>
+            <button onclick="closeModal()" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full h-8 w-8 flex items-center justify-center">&times;</button>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                Portal de Plataformas <span class="text-[#D4AF37]">VIP</span>
+            </h1>
+            <p class="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Sua central de acesso exclusivo às melhores plataformas de jogos online.</p>
+        </header>
+
+        <!-- Controls: Search and Filter -->
+        <div class="mb-10 flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full sm:max-w-xs">
+                <input type="text" id="search-input" placeholder="Buscar plataforma..." class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#0D1117] border border-[#30363D] focus:ring-2 focus:ring-[#58A6FF] focus:border-[#58A6FF] outline-none transition-all duration-300">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="filterPlatforms('all')" class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Todos</button>
+                <button onclick="filterPlatforms('popular')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Populares</button>
+                <button onclick="filterPlatforms('new')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Novas</button>
+            </div>
+        </div>
+
+        <!-- Platforms Grid -->
+        <div id="platforms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Platform cards will be dynamically inserted here -->
+        </div>
+        <p id="no-results" class="text-center text-gray-500 mt-10 hidden">Nenhuma plataforma encontrada.</p>
+
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-10 border-t border-[#30363D]">
+        <p class="text-gray-500 text-sm">&copy; 2024 Portal de Plataformas VIP. Todos os direitos reservados.</p>
+    </footer>
+
+
+    <script>
+        // --- DATA ---
+        const platforms = [
+            { name: "FF555.com", url: "https://ff555g.com/?pid=477074998", tags: ['popular'] },
+            { name: "C333.com", url: "https://c333.io/?a=zltj2s5m", tags: ['popular', 'new'] },
+            { name: "55DD.com", url: "https://55dd2.cc/?pid=2564045898", tags: ['popular'] },
+            { name: "55D.com", url: "https://56d66.vip/?pid=1908403141", tags: [] },
+            { name: "7XX.com", url: "https://7xx.vip/?pid=867656056", tags: ['new'] },
+            { name: "5WIN.com", url: "http://www.1935555.com/?r=cur5942", tags: ['popular'] },
+            { name: "79R.com", url: "https://79r777.vip/?pid=2489762528", tags: [] },
+            { name: "ZWW.com", url: "https://zww27.com/?pid=1506833475", tags: ['new'] },
+            { name: "65A.com", url: "https://65a.zone/?a=sunkvv94", tags: [] },
+            { name: "4296.com", url: "https://4296win.com/?pid=2625072774", tags: [] },
+            { name: "3831.com", url: "https://383177.com/?pid=2485298459", tags: ['new'] },
+            { name: "BoiPanda.com", url: "https://www.boipanda.cc/?id=515640273", tags: ['popular'] }
+        ];
+
+        // --- DOM Elements ---
+        const grid = document.getElementById('platforms-grid');
+        const searchInput = document.getElementById('search-input');
+        const noResults = document.getElementById('no-results');
+        const qrModal = document.getElementById('qr-modal');
+        const qrcodeContainer = document.getElementById('qrcode');
+        const qrModalTitle = document.getElementById('qr-modal-title');
+        let qrcode = null;
+
+        // --- FUNCTIONS ---
+
+        /**
+         * Renders the platform cards to the grid
+         * @param {Array} platformsToRender - The array of platform objects to display
+         */
+        function renderPlatforms(platformsToRender) {
+            grid.innerHTML = '';
+            if (platformsToRender.length === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+            
+            platformsToRender.forEach((platform, index) => {
+                const tagsHTML = platform.tags.map(tag => {
+                    const tagClass = tag === 'popular' ? 'tag-popular' : 'tag-new';
+                    return `<span class="tag ${tagClass} text-xs font-semibold mr-2 px-2.5 py-1 rounded-full">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
+                }).join('');
+
+                const card = document.createElement('div');
+                card.className = 'card-upgraded rounded-2xl shadow-lg transition-all duration-300 flex flex-col p-6 relative overflow-hidden';
+                card.style.animation = `fadeInUp 0.5s ${index * 0.05}s ease-out both`;
+                
+                card.innerHTML = `
+                    <div class="absolute -top-2 -right-2 text-white/5">
+                        <i data-lucide="dice-6" class="w-24 h-24 rotate-12"></i>
+                    </div>
+                    <div class="relative z-10 flex-grow flex flex-col">
+                        <div class="flex-grow">
+                            <div class="mb-3 min-h-[24px]">${tagsHTML}</div>
+                            <h2 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">${platform.name}</h2>
+                        </div>
+                        <div class="mt-6 flex items-center gap-2">
+                            <a href="${platform.url}" target="_blank" rel="noopener noreferrer" class="flex-grow text-center btn-primary font-semibold py-2.5 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                                <span>Acessar</span>
+                            </a>
+                            <button onclick="copyLink('${platform.url}', this)" class="btn-secondary p-2.5 rounded-lg" title="Copiar Link">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="showQrCode('${platform.url}', '${platform.name}')" class="btn-secondary p-2.5 rounded-lg" title="Mostrar QR Code">
+                                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        /**
+         * Copies the platform URL to the clipboard
+         */
+        function copyLink(url, btnElement) {
+            navigator.clipboard.writeText(url).then(() => {
+                const originalIcon = btnElement.innerHTML;
+                btnElement.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-400"></i>';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btnElement.innerHTML = originalIcon;
+                    lucide.createIcons();
+                }, 2000);
+            }).catch(err => {
+                console.error('Falha ao copiar: ', err);
+            });
+        }
+
+        /**
+         * Shows the QR code modal
+         */
+        function showQrCode(url, name) {
+            qrModalTitle.textContent = `QR Code para ${name}`;
+            qrcodeContainer.innerHTML = ''; // Clear previous QR code
+            qrcode = new QRCode(qrcodeContainer, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#0D1117",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            qrModal.classList.remove('hidden');
+            setTimeout(() => {
+                qrModal.classList.add('opacity-100');
+                qrModal.querySelector('div > div').classList.add('scale-100');
+            }, 10);
+        }
+
+        /** Closes the QR code modal */
+        function closeModal() {
+            qrModal.classList.remove('opacity-100');
+            qrModal.querySelector('div > div').classList.remove('scale-100');
+            setTimeout(() => {
+                qrModal.classList.add('hidden');
+            }, 300);
+        }
+
+        /**
+         * Filters platforms based on a tag
+         */
+        function filterPlatforms(tag) {
+            const searchTerm = searchInput.value.toLowerCase();
+            let filtered = platforms;
+
+            if (tag !== 'all') {
+                filtered = filtered.filter(p => p.tags.includes(tag));
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
+            }
+
+            renderPlatforms(filtered);
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('btn-primary'));
+            document.querySelector(`.filter-btn[onclick="filterPlatforms('${tag}')"]`).classList.add('btn-primary');
+        }
+
+        // --- EVENT LISTENERS ---
+        searchInput.addEventListener('input', () => {
+            const activeFilter = document.querySelector('.filter-btn.btn-primary')?.getAttribute('onclick').match(/'(.*?)'/)[1] || 'all';
+            filterPlatforms(activeFilter);
+        });
+        
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !qrModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                closeModal();
+            }
+        });
+
+        // --- INITIAL RENDER ---
+        document.addEventListener('DOMContentLoaded', () => {
+            filterPlatforms('all');
+            lucide.createIcons();
+        });
+
+    </script>
+</body>
+</html>
