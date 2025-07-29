@@ -4,91 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Plataformas VIP</title>
-    
+    <meta name="description" content="Acesse as melhores plataformas de jogos online VIP. Central exclusiva, rápida e segura.">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons (Lucide) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script defer src="https://unpkg.com/lucide@latest"></script>
     <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
+    <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0D1117;
-            color: #C9D1D9;
-        }
-        .card-upgraded {
-            background: radial-gradient(circle at 100% 0%, rgba(88, 166, 255, 0.05), rgba(88, 166, 255, 0) 40%), #161B22;
-            border: 1px solid #30363D;
-        }
-        .card-upgraded:hover {
-            border-color: #58A6FF;
-            transform: translateY(-0.5rem);
-        }
-        .btn-primary {
-            background-color: #58A6FF;
-            color: #0D1117;
-        }
-        .btn-primary:hover {
-            background-color: #80B9FF;
-        }
-        .btn-secondary {
-            background-color: #21262D;
-            border: 1px solid #30363D;
-        }
-        .btn-secondary:hover {
-            background-color: #30363D;
-        }
-        .tag {
-            background-color: #30363D;
-            color: #8B949E;
-        }
-        .tag-popular {
-            background-color: rgba(212, 175, 55, 0.1);
-            color: #D4AF37;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-        .tag-new {
-            background-color: rgba(88, 166, 255, 0.1);
-            color: #58A6FF;
-            border: 1px solid rgba(88, 166, 255, 0.3);
-        }
-        /* Custom scrollbar */
+        body { font-family: 'Poppins', sans-serif; background: #0D1117; color: #C9D1D9; transition: background 0.3s, color 0.3s;}
+        .card-upgraded { background: radial-gradient(circle at 100% 0%, rgba(88,166,255,0.1), rgba(88,166,255,0) 40%), #161B22; border: 1px solid #30363D; transition: border-color 0.3s, transform 0.3s;}
+        .card-upgraded:hover { border-color: #58A6FF; transform: translateY(-0.5rem) scale(1.02);}
+        .btn-primary { background: #58A6FF; color: #0D1117; }
+        .btn-primary:hover, .filter-btn.active { background: #80B9FF; color: #161B22;}
+        .btn-secondary { background: #21262D; border: 1px solid #30363D; color: #C9D1D9;}
+        .btn-secondary:hover { background: #30363D;}
+        .tag { background: #30363D; color: #8B949E;}
+        .tag-popular { background: rgba(212,175,55,0.1); color: #D4AF37; border: 1px solid rgba(212,175,55,0.3);}
+        .tag-new { background: rgba(88,166,255,0.1); color: #58A6FF; border: 1px solid rgba(88,166,255,0.3);}
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #161B22; }
-        ::-webkit-scrollbar-thumb { background: #30363D; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #30363D; border-radius: 4px;}
         ::-webkit-scrollbar-thumb:hover { background: #58A6FF; }
-
-        /* Animation */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
         }
+        .focus-ring:focus {outline: 2px solid #58A6FF;}
+        .star-icon { transition: color 0.2s;}
+        .star-icon.text-yellow-400 { color: #D4AF37 !important; }
+        .star-icon.text-gray-400 { color: #8B949E !important; }
+        .favorite-btn .star-icon { color: #8B949E; }
+        .favorite-btn.favorited .star-icon { color: #FFD700; }
+        .history-badge { font-size: 0.7em; background: #58a6ff20; color: #58A6FF; border-radius: 6px; padding: 2px 8px; margin-left: 8px; }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- QR Code Modal -->
-    <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden transition-opacity duration-300">
-        <div class="bg-[#161B22] p-8 rounded-2xl shadow-2xl border border-[#30363D] text-center relative transform transition-transform duration-300 scale-95">
+    <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden transition-opacity duration-300" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="bg-[#161B22] p-8 rounded-2xl shadow-2xl border border-[#30363D] text-center relative" style="min-width:280px;">
+            <button id="close-modal" class="absolute -top-3 -right-3 bg-red-600 text-white rounded-full h-8 w-8 flex items-center justify-center focus-ring" aria-label="Fechar Modal">&times;</button>
             <h3 id="qr-modal-title" class="text-2xl font-semibold mb-4 text-white"></h3>
             <div id="qrcode" class="flex justify-center items-center p-2 bg-white rounded-lg"></div>
             <p class="text-gray-400 mt-4 text-sm">Escaneie para acessar do seu celular</p>
-            <button onclick="closeModal()" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full h-8 w-8 flex items-center justify-center">&times;</button>
         </div>
     </div>
 
@@ -96,38 +56,46 @@
 
         <!-- Header -->
         <header class="text-center mb-10">
-            <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">
-                Portal de Plataformas <span class="text-[#D4AF37]">VIP</span>
-            </h1>
+            <div class="flex flex-col items-center justify-center gap-3">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                    Portal de Plataformas <span class="text-[#D4AF37]">VIP</span>
+                </h1>
+                <div class="flex gap-2 mt-2 items-center">
+                    <button id="share-portal-btn" class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 font-semibold focus-ring text-base" aria-label="Compartilhar Portal">
+                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                        Compartilhar Portal
+                    </button>
+                </div>
+            </div>
             <p class="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Sua central de acesso exclusivo às melhores plataformas de jogos online.</p>
         </header>
 
         <!-- Controls: Search and Filter -->
-        <div class="mb-10 flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <nav aria-label="Filtrar e buscar plataformas" class="mb-10 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:max-w-xs">
-                <input type="text" id="search-input" placeholder="Buscar plataforma..." class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#0D1117] border border-[#30363D] focus:ring-2 focus:ring-[#58A6FF] focus:border-[#58A6FF] outline-none transition-all duration-300">
-                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                <input type="text" id="search-input" placeholder="Buscar por nome..." class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#0D1117] border border-[#30363D] focus:ring-2 focus:ring-[#58A6FF] focus:border-[#58A6FF] outline-none transition-all duration-300 focus-ring" aria-label="Buscar plataforma">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"></i>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="filterPlatforms('all')" class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Todos</button>
-                <button onclick="filterPlatforms('popular')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Populares</button>
-                <button onclick="filterPlatforms('new')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary">Novas</button>
+            <div class="flex items-center gap-2 flex-wrap">
+                <button data-filter="all" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary active focus-ring" aria-label="Mostrar todas" type="button">Todos</button>
+                <button data-filter="popular" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary focus-ring" aria-label="Mostrar populares" type="button">Populares</button>
+                <button data-filter="new" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary focus-ring" aria-label="Mostrar novas" type="button">Novas</button>
+                <button data-filter="favorite" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary focus-ring" aria-label="Favoritos" type="button">Favoritos</button>
+                <button data-filter="history" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium btn-secondary focus-ring" aria-label="Já acessados" type="button">Acessados</button>
             </div>
-        </div>
+        </nav>
 
         <!-- Platforms Grid -->
-        <div id="platforms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Platform cards will be dynamically inserted here -->
-        </div>
-        <p id="no-results" class="text-center text-gray-500 mt-10 hidden">Nenhuma plataforma encontrada.</p>
-
+        <section>
+            <div id="platforms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-live="polite"></div>
+            <p id="no-results" class="text-center text-gray-500 mt-10 hidden">Nenhuma plataforma encontrada.</p>
+        </section>
     </div>
     
     <!-- Footer -->
     <footer class="text-center py-8 mt-10 border-t border-[#30363D]">
         <p class="text-gray-500 text-sm">&copy; 2024 Portal de Plataformas VIP. Todos os direitos reservados.</p>
     </footer>
-
 
     <script>
         // --- DATA ---
@@ -153,83 +121,258 @@
         const qrModal = document.getElementById('qr-modal');
         const qrcodeContainer = document.getElementById('qrcode');
         const qrModalTitle = document.getElementById('qr-modal-title');
+        const closeModalBtn = document.getElementById('close-modal');
+        const sharePortalBtn = document.getElementById('share-portal-btn');
         let qrcode = null;
 
-        // --- FUNCTIONS ---
+        // --- Funções utilitárias ---
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('favorites') || '[]');
+        }
+        function setFavorites(arr) {
+            localStorage.setItem('favorites', JSON.stringify(arr));
+        }
+        function getHistory() {
+            return JSON.parse(localStorage.getItem('history') || '[]');
+        }
+        function setHistory(arr) {
+            localStorage.setItem('history', JSON.stringify(arr));
+        }
+        function getRating(name) {
+            return parseInt(localStorage.getItem('rating_' + name)) || 0;
+        }
+        function setRating(name, rating) {
+            localStorage.setItem('rating_' + name, rating);
+        }
 
-        /**
-         * Renders the platform cards to the grid
-         * @param {Array} platformsToRender - The array of platform objects to display
-         */
-        function renderPlatforms(platformsToRender) {
+        // --- RENDERIZAÇÃO PRINCIPAL ---
+        function renderPlatforms(platformsToRender = platforms) {
             grid.innerHTML = '';
+            const favorites = getFavorites();
+            const history = getHistory();
+
             if (platformsToRender.length === 0) {
                 noResults.style.display = 'block';
             } else {
                 noResults.style.display = 'none';
             }
-            
+
             platformsToRender.forEach((platform, index) => {
+                // Tags
                 const tagsHTML = platform.tags.map(tag => {
                     const tagClass = tag === 'popular' ? 'tag-popular' : 'tag-new';
                     return `<span class="tag ${tagClass} text-xs font-semibold mr-2 px-2.5 py-1 rounded-full">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
                 }).join('');
 
+                // Favorito?
+                const isFavorite = favorites.includes(platform.name);
+                // Já acessado?
+                const isHistory = history.includes(platform.name);
+
+                // Estrelas
+                const rating = getRating(platform.name);
+
+                // Card
                 const card = document.createElement('div');
                 card.className = 'card-upgraded rounded-2xl shadow-lg transition-all duration-300 flex flex-col p-6 relative overflow-hidden';
                 card.style.animation = `fadeInUp 0.5s ${index * 0.05}s ease-out both`;
-                
+
                 card.innerHTML = `
-                    <div class="absolute -top-2 -right-2 text-white/5">
+                    <div class="absolute -top-2 -right-2 text-white/5 pointer-events-none">
                         <i data-lucide="dice-6" class="w-24 h-24 rotate-12"></i>
                     </div>
                     <div class="relative z-10 flex-grow flex flex-col">
                         <div class="flex-grow">
-                            <div class="mb-3 min-h-[24px]">${tagsHTML}</div>
+                            <div class="mb-3 min-h-[24px] flex flex-wrap items-center">
+                                ${tagsHTML}
+                                ${isHistory ? '<span class="history-badge">Acessado</span>' : ''}
+                            </div>
                             <h2 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">${platform.name}</h2>
+                            <div class="flex gap-1 rating-stars mt-2 mb-2" data-name="${platform.name}">
+                                ${[1,2,3,4,5].map(i => `<i data-lucide="star" class="star-icon w-5 h-5 cursor-pointer ${i<=rating?'text-yellow-400':'text-gray-400'}"></i>`).join('')}
+                            </div>
                         </div>
                         <div class="mt-6 flex items-center gap-2">
-                            <a href="${platform.url}" target="_blank" rel="noopener noreferrer" class="flex-grow text-center btn-primary font-semibold py-2.5 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                            <a href="${platform.url}" target="_blank" rel="noopener noreferrer" class="flex-grow text-center btn-primary font-semibold py-2.5 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 focus-ring" aria-label="Acessar plataforma ${platform.name}">
                                 <i data-lucide="play-circle" class="w-5 h-5"></i>
                                 <span>Acessar</span>
                             </a>
-                            <button onclick="copyLink('${platform.url}', this)" class="btn-secondary p-2.5 rounded-lg" title="Copiar Link">
+                            <button class="btn-secondary p-2.5 rounded-lg copy-btn focus-ring" title="Copiar Link" aria-label="Copiar Link de ${platform.name}" data-url="${platform.url}">
                                 <i data-lucide="copy" class="w-5 h-5"></i>
                             </button>
-                            <button onclick="showQrCode('${platform.url}', '${platform.name}')" class="btn-secondary p-2.5 rounded-lg" title="Mostrar QR Code">
+                            <button class="btn-secondary p-2.5 rounded-lg qr-btn focus-ring" title="Mostrar QR Code" aria-label="Mostrar QR Code de ${platform.name}" data-url="${platform.url}" data-name="${platform.name}">
                                 <i data-lucide="qr-code" class="w-5 h-5"></i>
+                            </button>
+                            <button class="btn-secondary p-2.5 rounded-lg share-btn focus-ring" title="Compartilhar" aria-label="Compartilhar ${platform.name}" data-url="${platform.url}" data-name="${platform.name}">
+                                <i data-lucide="share-2" class="w-5 h-5"></i>
+                            </button>
+                            <button class="btn-secondary p-2.5 rounded-lg favorite-btn${isFavorite?' favorited':''} focus-ring" title="Favoritar" aria-label="Favoritar ${platform.name}" data-name="${platform.name}">
+                                <i data-lucide="star" class="star-icon w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
-            lucide.createIcons();
+            // Re-render lucide icons
+            if (window.lucide?.createIcons) lucide.createIcons();
         }
 
-        /**
-         * Copies the platform URL to the clipboard
-         */
+        // --- AÇÕES E EVENTOS ---
+        // Favoritar plataforma
+        grid.addEventListener('click', (e) => {
+            if (e.target.closest('.favorite-btn')) {
+                const btn = e.target.closest('.favorite-btn');
+                const name = btn.dataset.name;
+                let favs = getFavorites();
+                if (favs.includes(name)) {
+                    favs = favs.filter(f => f !== name);
+                    btn.classList.remove('favorited');
+                } else {
+                    favs.push(name);
+                    btn.classList.add('favorited');
+                }
+                setFavorites(favs);
+                renderPlatforms(getFilteredPlatforms());
+            }
+        });
+
+        // Compartilhar plataforma individual
+        grid.addEventListener('click', (e) => {
+            if (e.target.closest('.share-btn')) {
+                const btn = e.target.closest('.share-btn');
+                const url = btn.dataset.url;
+                const name = btn.dataset.name;
+                shareContent({title: name, url, text: `Acesse a plataforma ${name}:`});
+            }
+        });
+
+        // Avaliação por estrelas
+        grid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('star-icon')) {
+                const star = e.target;
+                const stars = Array.from(star.parentNode.querySelectorAll('.star-icon'));
+                const idx = stars.indexOf(star);
+                stars.forEach((s, i) => {
+                    s.classList.toggle('text-yellow-400', i <= idx);
+                    s.classList.toggle('text-gray-400', i > idx);
+                });
+                const platformName = star.parentNode.dataset.name;
+                setRating(platformName, idx + 1);
+            }
+        });
+
+        // Copiar link
+        grid.addEventListener('click', (e) => {
+            if (e.target.closest('.copy-btn')) {
+                const btn = e.target.closest('.copy-btn');
+                copyLink(btn.dataset.url, btn);
+            }
+        });
+
+        // QR Code
+        grid.addEventListener('click', (e) => {
+            if (e.target.closest('.qr-btn')) {
+                const btn = e.target.closest('.qr-btn');
+                showQrCode(btn.dataset.url, btn.dataset.name);
+            }
+        });
+
+        // Histórico: ao clicar em "Acessar"
+        grid.addEventListener('click', (e) => {
+            if (e.target.closest('a.btn-primary')) {
+                const name = e.target.closest('a.btn-primary').parentNode.parentNode.querySelector('h2').textContent;
+                let history = getHistory();
+                if (!history.includes(name)) history.push(name);
+                setHistory(history);
+                renderPlatforms(getFilteredPlatforms());
+            }
+        });
+
+        // Modal QR
+        closeModalBtn.addEventListener('click', closeModal);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !qrModal.classList.contains('hidden')) closeModal();
+        });
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) closeModal();
+        });
+
+        // Compartilhar portal
+        sharePortalBtn.addEventListener('click', () => {
+            shareContent({
+                title: 'Portal de Plataformas VIP',
+                url: window.location.href,
+                text: 'Confira este portal com as melhores plataformas VIP de jogos!'
+            });
+        });
+
+        // Busca avançada e filtros
+        function getFilteredPlatforms() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+            let filtered = [...platforms];
+            const favorites = getFavorites();
+            const history = getHistory();
+
+            // Filtros por tag/favorito/history
+            if (activeFilter === 'popular' || activeFilter === 'new') {
+                filtered = filtered.filter(p => p.tags.includes(activeFilter));
+            } else if (activeFilter === 'favorite') {
+                filtered = filtered.filter(p => favorites.includes(p.name));
+            } else if (activeFilter === 'history') {
+                filtered = filtered.filter(p => history.includes(p.name));
+            }
+            // Busca por nome
+            if (searchTerm) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
+            }
+            return filtered;
+        }
+
+        // Filtros
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active','btn-primary'));
+                btn.classList.add('active','btn-primary');
+                renderPlatforms(getFilteredPlatforms());
+            });
+        });
+
+        // Busca
+        searchInput.addEventListener('input', () => {
+            renderPlatforms(getFilteredPlatforms());
+        });
+
+        // Compartilhar
+        function shareContent({title, url, text}) {
+            if (navigator.share) {
+                navigator.share({title, url, text}).catch(() => {});
+            } else {
+                // Fallback: WhatsApp
+                const shareText = encodeURIComponent(`${text}\n${url}`);
+                window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+            }
+        }
+
+        // Copiar link
         function copyLink(url, btnElement) {
             navigator.clipboard.writeText(url).then(() => {
-                const originalIcon = btnElement.innerHTML;
                 btnElement.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-400"></i>';
-                lucide.createIcons();
+                if (window.lucide?.createIcons) lucide.createIcons();
                 setTimeout(() => {
-                    btnElement.innerHTML = originalIcon;
-                    lucide.createIcons();
-                }, 2000);
+                    btnElement.innerHTML = '<i data-lucide="copy" class="w-5 h-5"></i>';
+                    if (window.lucide?.createIcons) lucide.createIcons();
+                }, 1800);
             }).catch(err => {
-                console.error('Falha ao copiar: ', err);
+                alert('Falha ao copiar o link.');
             });
         }
 
-        /**
-         * Shows the QR code modal
-         */
+        // QR Code
         function showQrCode(url, name) {
             qrModalTitle.textContent = `QR Code para ${name}`;
-            qrcodeContainer.innerHTML = ''; // Clear previous QR code
+            qrcodeContainer.innerHTML = '';
             qrcode = new QRCode(qrcodeContainer, {
                 text: url,
                 width: 200,
@@ -238,66 +381,19 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-            
             qrModal.classList.remove('hidden');
-            setTimeout(() => {
-                qrModal.classList.add('opacity-100');
-                qrModal.querySelector('div > div').classList.add('scale-100');
-            }, 10);
+            setTimeout(() => qrModal.classList.add('opacity-100'), 10);
+            closeModalBtn.focus();
         }
-
-        /** Closes the QR code modal */
         function closeModal() {
             qrModal.classList.remove('opacity-100');
-            qrModal.querySelector('div > div').classList.remove('scale-100');
-            setTimeout(() => {
-                qrModal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => qrModal.classList.add('hidden'), 250);
         }
 
-        /**
-         * Filters platforms based on a tag
-         */
-        function filterPlatforms(tag) {
-            const searchTerm = searchInput.value.toLowerCase();
-            let filtered = platforms;
-
-            if (tag !== 'all') {
-                filtered = filtered.filter(p => p.tags.includes(tag));
-            }
-            
-            if (searchTerm) {
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
-            }
-
-            renderPlatforms(filtered);
-            
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('btn-primary'));
-            document.querySelector(`.filter-btn[onclick="filterPlatforms('${tag}')"]`).classList.add('btn-primary');
-        }
-
-        // --- EVENT LISTENERS ---
-        searchInput.addEventListener('input', () => {
-            const activeFilter = document.querySelector('.filter-btn.btn-primary')?.getAttribute('onclick').match(/'(.*?)'/)[1] || 'all';
-            filterPlatforms(activeFilter);
-        });
-        
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !qrModal.classList.contains('hidden')) {
-                closeModal();
-            }
-        });
-
-        qrModal.addEventListener('click', (e) => {
-            if (e.target === qrModal) {
-                closeModal();
-            }
-        });
-
-        // --- INITIAL RENDER ---
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            filterPlatforms('all');
-            lucide.createIcons();
+            renderPlatforms(getFilteredPlatforms());
+            if (window.lucide?.createIcons) lucide.createIcons();
         });
 
     </script>
